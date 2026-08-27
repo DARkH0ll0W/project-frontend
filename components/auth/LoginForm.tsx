@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export default function LoginForm() {
   const { login } = useAuth();
+  const isLoading = useSelector((state: RootState) => state.auth.loading);
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
@@ -17,8 +20,6 @@ export default function LoginForm() {
       identifier: formData.get("identifier") as string,
       password: formData.get("password") as string,
     };
-
-    console.log(payload);
 
     try {
       await login(payload);
@@ -45,8 +46,9 @@ export default function LoginForm() {
           name="identifier"
           type="text"
           required
+          disabled={isLoading}
           placeholder="Username or Email"
-          className="w-full rounded-lg border px-4 py-3"
+          className="w-full rounded-lg border px-4 py-3 disabled:opacity-60"
         />
       </div>
 
@@ -63,8 +65,9 @@ export default function LoginForm() {
           name="password"
           type="password"
           required
+          disabled={isLoading}
           placeholder="Enter your password"
-          className="w-full rounded-lg border px-4 py-3 outline-none focus:ring-2"
+          className="w-full rounded-lg border px-4 py-3 outline-none focus:ring-2 disabled:opacity-60"
         />
       </div>
 
@@ -79,9 +82,13 @@ export default function LoginForm() {
 
       <button
         type="submit"
-        className="w-full rounded-lg bg-blue-500 py-3 text-white hover:bg-slate-800 hover:font-bold focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-1"
+        disabled={isLoading}
+        className="w-full flex items-center justify-center gap-2 rounded-lg bg-blue-500 py-3 text-white hover:bg-slate-800 hover:font-bold focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-1 disabled:opacity-70 disabled:cursor-not-allowed"
       >
-        Sign In
+        {isLoading && (
+          <span className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+        )}
+        {isLoading ? "Signing in..." : "Sign In"}
       </button>
 
       <p className="text-center text-sm">

@@ -40,7 +40,9 @@ export function useAuth() {
 
       dispatch(setUser(data.user));
 
-      router.push("/dashboard");
+      router.replace("/dashboard");
+      router.refresh();
+
     } finally {
       dispatch(setLoading(false));
     }
@@ -62,7 +64,9 @@ export function useAuth() {
 
     dispatch(setUser(data.user));
 
-    router.push("/dashboard");
+    router.replace("/dashboard");
+    router.refresh();
+
   } catch (error: any) {
     console.error(
       "Register error:",
@@ -79,7 +83,8 @@ export function useAuth() {
 
     dispatch(logout());
 
-    router.push("/login");
+    router.replace("/login");
+    router.refresh();
   };
 
   return {

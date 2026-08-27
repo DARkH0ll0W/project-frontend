@@ -6,7 +6,7 @@ interface TemperatureCardProps {
 
 
 
-const getTemperatureStatus = (temp: number) => {
+export const getTemperatureStatus = (temp: number) => {
   if (temp < 34.4) {
     return {
       label: "Critical Low",

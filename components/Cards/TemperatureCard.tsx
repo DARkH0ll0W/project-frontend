@@ -1,48 +1,30 @@
 import { Thermometer } from "lucide-react";
 
 interface TemperatureCardProps {
-  value: number;
+  value: number | null;
 }
 
-
-
-export const getTemperatureStatus = (temp: number) => {
-  if (temp < 34.4) {
+export const getTemperatureStatus = (temp: number | null) => {
+  if (temp === null || !Number.isFinite(temp)) {
     return {
-      label: "Critical Low",
-      color: "#DC2626",
-      icon: "🚨",
+      label: "Unavailable",
+      color: "#94A3B8",
+      icon: "—",
     };
   }
 
-  if (temp <= 36.7) {
+  if (temp >= 38) {
     return {
-      label: "Normal",
-      color: "#22C55E",
-      icon: "🟢",
-    };
-  }
-
-  if (temp <= 37.4) {
-    return {
-      label: "Low-Grade Fever",
-      color: "#EAB308",
-      icon: "🟡",
-    };
-  }
-
-  if (temp <= 38.8) {
-    return {
-      label: "High Fever",
+      label: "High",
       color: "#EF4444",
       icon: "🔴",
     };
   }
 
   return {
-    label: "Critical High",
-    color: "#991B1B",
-    icon: "🚨",
+    label: "Normal",
+    color: "#22C55E",
+    icon: "🟢",
   };
 };
 
@@ -50,23 +32,26 @@ export const getTemperatureStatus = (temp: number) => {
 export default function TemperatureCard({
   value,
 }: TemperatureCardProps) {
-  const minTemp = 34;
-  const maxTemp = 40;
+  const minTemp = 0;
+  const maxTemp = 50;
 
-  const progress = Math.max(
-    0,
-    Math.min(
-      ((value - minTemp) / (maxTemp - minTemp)) * 100,
-      100
-    )
-  );
+const progress =
+  value === null
+    ? 0
+    : Math.max(
+        0,
+        Math.min(
+          ((value - minTemp) / (maxTemp - minTemp)) * 100,
+          100
+        )
+      );
 
   const status = getTemperatureStatus(value);
 
   return (
     <div className="bg-gray-900 rounded-3xl p-6 shadow-sm">
       <h3 className="text-gray-400 text-xl font-semibold mb-8">
-        BODY TEMPERATURE
+        AMBIENT TEMPERATURE
       </h3>
 
       <div className="flex items-center gap-6">
@@ -80,8 +65,12 @@ export default function TemperatureCard({
 
          <div>
             <h2 className="text-5xl font-bold text-white">
-              {value}
-              <span className="text-2xl">°C</span>
+              {value === null ? ("—") : (
+                              <>
+                                {value.toFixed(1)}
+                                <span className="text-2xl">°C</span>
+                              </>
+                            )}
             </h2>
 
             <p

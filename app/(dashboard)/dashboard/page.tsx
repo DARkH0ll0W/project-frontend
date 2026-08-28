@@ -30,7 +30,7 @@ interface Reading {
   device?: Device;
   heart_rate?: number;
   spo2?: number;
-  temperature?: number;
+  temperature?: number | null;
   gas_level?: number;
   timestamp?: string;
 }
@@ -115,7 +115,7 @@ const Dashboard = () => {
 
   const heartRate = latest?.heart_rate ?? 0;
   const spo2 = latest?.spo2 ?? 0;
-  const temperature = latest?.temperature ?? 0;
+  const temperature = latest?.temperature ?? null;
   const mq2 = latest?.mq2 ?? 0;
   const mq135 = latest?.mq135 ?? 0;
 
@@ -146,7 +146,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 mt-6">
         <StatusPill label="Heart Rate" status={getHeartRatePillStatus(heartRate)} />
         <StatusPill label="SpO2" status={getSpo2PillStatus(spo2)} />
-        <StatusPill label="Temperature" status={getTemperatureStatus(temperature)} />
+        <StatusPill label="Ambient Temperature" status={getTemperatureStatus(temperature)} />
         <StatusPill label="Gas Level" status={getGasLevelPillStatus(mq2)} />
         <div className="col-span-2 sm:col-span-1 md:col-span-2">
           <MotionCard motionStatus={latest?.motion_status ?? "normal"} mq135={mq135} />

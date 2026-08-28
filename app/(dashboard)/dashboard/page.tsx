@@ -26,6 +26,8 @@ interface Reading {
   gas_status?: string;
   mq135: number;
   mq2: number;
+  mq135_normalized?: number | null;
+  mq2_normalized?: number | null;
   device_details: any;
   device?: Device;
   heart_rate?: number;
@@ -51,11 +53,16 @@ const getSpo2PillStatus = (spo2: number) => {
 
 // Distinct from Air Quality (MQ-135-based, in MotionCard): this one reads
 // MQ-2, which senses combustible gas/smoke rather than general air quality.
-const getGasLevelPillStatus = (mq2: number) => {
-  if (mq2 <= 50) return { label: "Normal", color: "#22C55E" };
-  if (mq2 <= 100) return { label: "Moderate", color: "#EAB308" };
-  if (mq2 <= 200) return { label: "High", color: "#EF4444" };
-  return { label: "Critical", color: "#991B1B" };
+const getGasLevelPillStatus = (normalizedValue: number | null) => {
+  if (normalizedValue === null) {
+    return { label: "Unavailable", color: "#94A3B8" };
+  }
+
+  if (normalizedValue >= 1.8) {
+    return { label: "Warning", color: "#EF4444" };
+  }
+
+  return { label: "Safe", color: "#22C55E" };
 };
 
 interface StatusPillProps {
@@ -118,6 +125,8 @@ const Dashboard = () => {
   const temperature = latest?.temperature ?? null;
   const mq2 = latest?.mq2 ?? 0;
   const mq135 = latest?.mq135 ?? 0;
+  const mq2Normalized = latest?.mq2_normalized ?? null;
+const mq135Normalized = latest?.mq135_normalized ?? null;
 
   return (
     <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-black text-white">
@@ -147,9 +156,9 @@ const Dashboard = () => {
         <StatusPill label="Heart Rate" status={getHeartRatePillStatus(heartRate)} />
         <StatusPill label="SpO2" status={getSpo2PillStatus(spo2)} />
         <StatusPill label="Ambient Temperature" status={getTemperatureStatus(temperature)} />
-        <StatusPill label="Gas Level" status={getGasLevelPillStatus(mq2)} />
+        <StatusPill label="Gas Level" status={getGasLevelPillStatus(mq2Normalized)} />
         <div className="col-span-2 sm:col-span-1 md:col-span-2">
-          <MotionCard motionStatus={latest?.motion_status ?? "normal"} mq135={mq135} />
+          <MotionCard motionStatus={latest?.motion_status ?? "normal"} mq135Normalized={mq135Normalized} />
         </div>
       </div>
 

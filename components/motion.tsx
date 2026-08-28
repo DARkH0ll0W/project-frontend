@@ -8,14 +8,19 @@ interface MotionProps {
   // quality sensor), not the composite gas_status used for Gas Level —
   // MQ-135 and MQ-2 are genuinely different physical sensors, so this
   // gives two distinct signals instead of showing the same value twice.
-  mq135: number;
+  mq135Normalized: number | null;
 }
 
-const getAirQualityStatus = (mq135: number) => {
-  if (mq135 <= 50) return { label: "Good", color: "#22C55E" };
-  if (mq135 <= 100) return { label: "Moderate", color: "#EAB308" };
-  if (mq135 <= 200) return { label: "Poor", color: "#EF4444" };
-  return { label: "Hazardous", color: "#991B1B" };
+const getAirQualityStatus = (mq135Normalized: number | null) => {
+  if (mq135Normalized === null) {
+    return { label: "Unavailable", color: "#94A3B8" };
+  }
+
+  if (mq135Normalized >= 1.8) {
+    return { label: "Warning", color: "#EF4444" };
+  }
+
+  return { label: "Good", color: "#22C55E" };
 };
 
 const getMotionStatus = (motion: "normal" | "fall_detected") => {
@@ -25,8 +30,11 @@ const getMotionStatus = (motion: "normal" | "fall_detected") => {
   return { label: "Normal", color: "#22C55E", emoji: "🧍" };
 };
 
-export default function MotionCard({ motionStatus, mq135 }: MotionProps) {
-  const airQuality = getAirQualityStatus(mq135);
+export default function MotionCard({
+  motionStatus,
+  mq135Normalized,
+}: MotionProps) {
+  const airQuality = getAirQualityStatus(mq135Normalized);
   const motion = getMotionStatus(motionStatus);
 
   return (

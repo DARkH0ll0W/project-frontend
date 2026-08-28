@@ -10,23 +10,29 @@ import {
 } from "recharts";
 
 interface Reading {
-  heart_rate?: number;
+  heart_rate?: number | null;
   timestamp?: string;
 }
 
 interface HeartRateCardProps {
-  value: number;
+  value: number | null;
   data: Reading[];
 }
 
-const getHeartRateStatus = (bpm: number) => {
+const getHeartRateStatus = (bpm: number | null) => {
+  if (bpm === null) {
+    return { label: "Poor Contact", color: "#94A3B8" };
+  }
+
   if (bpm < 60) {
-    return { label: "Low BPM", color: "#3B82F6" }; // Blue
+    return { label: "Low BPM", color: "#3B82F6" };
   }
+
   if (bpm <= 100) {
-    return { label: "Normal BPM", color: "#22C55E" }; // Green
+    return { label: "Normal BPM", color: "#22C55E" };
   }
-  return { label: "High BPM", color: "#EF4444" }; // Red
+
+  return { label: "High BPM", color: "#EF4444" };
 };
 
 // Takes value + data as props from the parent's single shared poll instead
@@ -54,7 +60,7 @@ const HeartRateCard: React.FC<HeartRateCardProps> = ({ value, data }) => {
 
       <div className="mb-4">
         <span className="text-4xl font-bold" style={{ color: status.color }}>
-          {value}
+          {value === null ? "—" : Math.round(value)}
         </span>
         <span className="ml-2 text-gray-400">BPM</span>
       </div>

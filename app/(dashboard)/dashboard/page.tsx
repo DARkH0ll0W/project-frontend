@@ -30,22 +30,39 @@ interface Reading {
   mq2_normalized?: number | null;
   device_details: any;
   device?: Device;
-  heart_rate?: number;
-  spo2?: number;
+  heart_rate?: number | null;
+  spo2?: number | null;
   temperature?: number | null;
   gas_level?: number;
   timestamp?: string;
 }
 
-// --- Status pill helpers for the 6-across row -----------------------------
+const getHeartRatePillStatus = (bpm: number | null) => {
+  if (bpm === null) {
+    return {
+      label: "Poor Contact",
+      color: "#94A3B8",
+    };
+  }
 
-const getHeartRatePillStatus = (bpm: number) => {
-  if (bpm < 60) return { label: "Low", color: "#3B82F6" };
-  if (bpm <= 100) return { label: "Normal", color: "#22C55E" };
+  if (bpm < 60) {
+    return { label: "Low", color: "#3B82F6" };
+  }
+
+  if (bpm <= 100) {
+    return { label: "Normal", color: "#22C55E" };
+  }
+
   return { label: "High", color: "#EF4444" };
 };
 
-const getSpo2PillStatus = (spo2: number) => {
+// --- Status pill helpers for the 6-across row -----------------------------
+
+const getSpo2PillStatus = (spo2: number | null) => {
+  if (spo2 === null) {
+    return { label: "Poor Contact", color: "#94A3B8" };
+  }
+
   if (spo2 < 90) return { label: "Critical", color: "#991B1B" };
   if (spo2 < 95) return { label: "Low", color: "#EAB308" };
   return { label: "Normal", color: "#22C55E" };
@@ -120,13 +137,13 @@ const Dashboard = () => {
 
   const latest = readings[0] || ({} as Reading);
 
-  const heartRate = latest?.heart_rate ?? 0;
-  const spo2 = latest?.spo2 ?? 0;
+  const heartRate = latest?.heart_rate ?? null;
+  const spo2 = latest?.spo2 ?? null;
   const temperature = latest?.temperature ?? null;
   const mq2 = latest?.mq2 ?? 0;
   const mq135 = latest?.mq135 ?? 0;
   const mq2Normalized = latest?.mq2_normalized ?? null;
-const mq135Normalized = latest?.mq135_normalized ?? null;
+  const mq135Normalized = latest?.mq135_normalized ?? null;
 
   return (
     <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-black text-white">

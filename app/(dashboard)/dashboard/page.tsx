@@ -136,9 +136,18 @@ const Dashboard = () => {
   }, []);
 
   const latest = readings[0] || ({} as Reading);
+  const latestHeartRateReading = readings.find(
+  (reading) => reading.heart_rate != null
+  );
 
-  const heartRate = latest?.heart_rate ?? null;
-  const spo2 = latest?.spo2 ?? null;
+  const latestSpo2Reading = readings.find(
+  (reading) => reading.spo2 != null
+  );
+
+  const heartRate =
+  latestHeartRateReading?.heart_rate ?? null;
+  const spo2 =
+  latestSpo2Reading?.spo2 ?? null;
   const temperature = latest?.temperature ?? null;
   const mq2 = latest?.mq2 ?? 0;
   const mq135 = latest?.mq135 ?? 0;

@@ -119,49 +119,6 @@ const ChartPanel: React.FC<ChartPanelProps> = ({ title, data, dataKey, color }) 
     </ResponsiveContainer>
   </div>
 );
-function getHeartRateUiStatus(
-  heartRate: number | null
-) {
-  if (heartRate == null) {
-    return {
-      label: "No Reading",
-      color: "text-gray-400",
-    };
-  }
-
-  if (heartRate < 60) {
-    return {
-      label: "Low",
-      color: "text-yellow-400",
-    };
-  }
-
-  if (heartRate <= 100) {
-    return {
-      label: "Normal",
-      color: "text-green-500",
-    };
-  }
-
-  if (heartRate <= 110) {
-    return {
-      label: "Mildly Elevated",
-      color: "text-yellow-400",
-    };
-  }
-
-  if (heartRate <= 120) {
-    return {
-      label: "Elevated",
-      color: "text-orange-500",
-    };
-  }
-
-  return {
-    label: "High",
-    color: "text-red-500",
-  };
-}
 
 const Dashboard = () => {
   const [readings, setReadings] = useState<Reading[]>([]);
@@ -183,7 +140,35 @@ const Dashboard = () => {
   latest?.heart_rate ?? null;
   
   const heartRateUiStatus =
-  getHeartRateUiStatus(heartRate);
+  heartRate == null
+    ? {
+        label: "No Reading",
+        color: "text-gray-400",
+      }
+    : heartRate < 60
+      ? {
+          label: "Low",
+          color: "text-blue-500",
+        }
+      : heartRate <= 100
+        ? {
+            label: "Normal",
+            color: "text-green-500",
+          }
+        : heartRate <= 110
+          ? {
+              label: "Mild",
+              color: "text-yellow-400",
+            }
+          : heartRate <= 120
+            ? {
+                label: "Moderate",
+                color: "text-orange-500",
+              }
+            : {
+                label: "High",
+                color: "text-red-500",
+              };
 
   const spo2 =
   latest?.spo2 ?? null;

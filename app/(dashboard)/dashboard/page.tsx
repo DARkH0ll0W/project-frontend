@@ -119,6 +119,49 @@ const ChartPanel: React.FC<ChartPanelProps> = ({ title, data, dataKey, color }) 
     </ResponsiveContainer>
   </div>
 );
+function getHeartRateUiStatus(
+  heartRate: number | null
+) {
+  if (heartRate == null) {
+    return {
+      label: "No Reading",
+      color: "text-gray-400",
+    };
+  }
+
+  if (heartRate < 60) {
+    return {
+      label: "Low",
+      color: "text-yellow-400",
+    };
+  }
+
+  if (heartRate <= 100) {
+    return {
+      label: "Normal",
+      color: "text-green-500",
+    };
+  }
+
+  if (heartRate <= 110) {
+    return {
+      label: "Mildly Elevated",
+      color: "text-yellow-400",
+    };
+  }
+
+  if (heartRate <= 120) {
+    return {
+      label: "Elevated",
+      color: "text-orange-500",
+    };
+  }
+
+  return {
+    label: "High",
+    color: "text-red-500",
+  };
+}
 
 const Dashboard = () => {
   const [readings, setReadings] = useState<Reading[]>([]);
@@ -136,18 +179,14 @@ const Dashboard = () => {
   }, []);
 
   const latest = readings[0] || ({} as Reading);
-  const latestHeartRateReading = readings.find(
-  (reading) => reading.heart_rate != null
-  );
-
-  const latestSpo2Reading = readings.find(
-  (reading) => reading.spo2 != null
-  );
-
   const heartRate =
-  latestHeartRateReading?.heart_rate ?? null;
+  latest?.heart_rate ?? null;
+  
+  const heartRateUiStatus =
+  getHeartRateUiStatus(heartRate);
+
   const spo2 =
-  latestSpo2Reading?.spo2 ?? null;
+  latest?.spo2 ?? null;
   const temperature = latest?.temperature ?? null;
   const mq2 = latest?.mq2 ?? 0;
   const mq135 = latest?.mq135 ?? 0;

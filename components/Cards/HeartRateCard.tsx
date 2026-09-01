@@ -32,6 +32,14 @@ const getHeartRateStatus = (bpm: number | null) => {
     return { label: "Normal BPM", color: "#22C55E" };
   }
 
+  if (bpm <= 110) {
+    return { label: "Mild BPM", color: "#EAB308" };
+  }
+
+  if (bpm <= 120) {
+    return { label: "Moderate BPM", color: "#F97316" };
+  }
+
   return { label: "High BPM", color: "#EF4444" };
 };
 

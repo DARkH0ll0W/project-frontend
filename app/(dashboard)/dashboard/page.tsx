@@ -53,6 +53,14 @@ const getHeartRatePillStatus = (bpm: number | null) => {
     return { label: "Normal", color: "#22C55E" };
   }
 
+  if (bpm <= 110) {
+    return { label: "Mild", color: "#EAB308" };
+  }
+
+  if (bpm <= 120) {
+    return { label: "Moderate", color: "#F97316" };
+  }
+
   return { label: "High", color: "#EF4444" };
 };
 
